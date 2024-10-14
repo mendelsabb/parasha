@@ -16,8 +16,8 @@ class OpenAIService:
         response = await self.client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a knowledgeable rabbi providing insights on Torah portions."},
-                {"role": "user", "content": f"Generate a brief biblical discourse and exegesis about the Torah portion {parasha_name}."}
+                {"role": "system", "content": "You are a knowledgeable jewish rabbi providing insights on Torah portions."},
+                {"role": "user", "content": f"Generate a brief jewish biblical discourse and exegesis about the Torah portion: {parasha_name}."}
             ]
         )
         return response.choices[0].message.content
