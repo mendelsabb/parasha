@@ -1,0 +1,18 @@
+# values.yaml
+replicaCount: 1
+cluster: api.alto3sg0g25ce33bb3.eastus.aroapp.io
+namespace: 896mendels
+image:
+  repository: mendel27/torah-discourse-app
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8000
+
+route:
+  enabled: true
+
+secret:
+  openaiApiKey: T1BFTkFJX0FQSV9LRVk9c2stcHJvai1tcUhUZURzQS1rbTVwWngwMnM4MDllLVRWOElYdVJlZXpGa2tGbDlWYzlOQ0czMDBqeFM4UWVmdW5BRW94MWY2UGs0ekhHbkhpMlQzQmxia0ZKUFdOZEJOZFlkdEx6QnMwU2ZqN1N1TU9WcU95RDB3NzkwLVFYSzdONmhKMTZpWlM2N1RHTlJwRE5LVko5N1dqQU91SXdybThUc0E=

@@ -1,0 +1,6 @@
+# Chart.yaml
+apiVersion: v2
+name: torah-discourse
+description: A Helm chart for Torah Discourse FastAPI application
+version: 0.1.0
+appVersion: "1.0.0"
