@@ -7,32 +7,18 @@ on:
     branches: [ main, dev ]
 
 jobs:
-  set-tag:
+  build-and-push:
     runs-on: ubuntu-latest
-    outputs:
-      tag: ${{ steps.set-tag.outputs.tag }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Get current date
-        id: date
         run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Get commit SHA
         id: vars
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
-      - name: Set TAG
-        id: set-tag
-        run: |
-          TAG="${{ github.ref_name }}-${{ env.DATE }}-${{ env.COMMIT_SHA }}"
-          echo "TAG=$TAG" >> $GITHUB_ENV
-          echo "::set-output name=tag::$TAG"
-
-  build-and-push:
-    runs-on: ubuntu-latest
-    needs: set-tag  # Ensure this job runs after set-tag
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -45,23 +31,36 @@ jobs:
         with:
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/torah-discourse-app:${{ env.TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/torah-discourse-app:${{ github.ref_name }}-${{ env.DATE }}-${{ env.COMMIT_SHA }}
 
   update-image-tag:
     runs-on: ubuntu-latest
-    needs: build-and-push  # Ensure this job runs after build-and-push
+    needs: build-and-push
     steps:
+      - name: Get current date
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Get commit SHA
+        id: vars
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+        
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Update image tag in values.yaml
         run: |
-          yq eval ".image.tag = \"${{ env.TAG }}\"" -i chart/values.yaml
+          sudo apt-get install -y yq
+          yq e '.image.tag = "${{ github.ref_name }}-${{ env.DATE }}-${{ env.COMMIT_SHA }}"' -i chart/values.yaml
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.MY_GITHUB_TOKEN }}@github.com/mendelsabb/parasha.git
 
       - name: Commit and push changes
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
           git add chart/values.yaml
-          git commit -m "Update image tag to ${{ env.TAG }}"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/mendelsabb/parasha.git HEAD:${{ github.ref_name }}
+          git commit -m "Update image tag to ${{ github.ref_name }}-${{ env.DATE }}-${{ env.COMMIT_SHA }}"
+          git push origin ${{ github.ref_name }}
+
