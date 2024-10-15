@@ -26,8 +26,6 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/torah-discourse-app:cache
-        cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/torah-discourse-app:cache,mode=max
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/torah-discourse-app:latest
           ${{ secrets.DOCKERHUB_USERNAME }}/torah-discourse-app:${{ github.ref_name }}-${{ env.DATE }}
