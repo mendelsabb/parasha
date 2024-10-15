@@ -2,30 +2,33 @@ name: Docker CI/CD
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main, dev ]
+    branches: [ main, develop ]
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Get current date
-      run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      - name: Get current date
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
-    - name: Login to DockerHub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    
-    - name: Build and push
-      uses: docker/build-push-action@v2
-      with:
-        push: true
-        tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/torah-discourse-app:latest
-          ${{ secrets.DOCKERHUB_USERNAME }}/torah-discourse-app:${{ github.ref_name }}-${{ env.DATE }}
+      - name: Get commit SHA
+        id: vars
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/torah-discourse-app:${{ github.ref_name }}-${{ env.DATE }}-${{ env.COMMIT_SHA }}

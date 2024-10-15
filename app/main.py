@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-app = FastAPI()
+# Create the FastAPI app with a custom title for the Swagger UI
+app = FastAPI(title="Parasha")
 
 app.include_router(parasha.router)
