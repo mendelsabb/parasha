@@ -58,7 +58,7 @@ jobs:
         run: |
           MAGE_TAG="${{ github.ref_name }}-${{ env.DATE }}-${{ env.COMMIT_SHA }}"
           echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
-          yq e ".image.tag = \"${IMAGE_TAG}\"" -i chart/values.yaml
+          yq -iy ".image.tag = \"${IMAGE_TAG}\"" chart/values.yaml
 
       - name: Configure Git
         run: |
