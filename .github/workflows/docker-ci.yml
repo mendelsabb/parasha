@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, dev ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 jobs:
   build-and-push:
@@ -35,28 +35,25 @@ jobs:
 
   update-image-tag:
     runs-on: ubuntu-latest
-    needs: build-and-push  # This job will run only after build-and-push completes
+    needs: build-and-push
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install yq
-        run: sudo snap install yq
-
-      - name: Update image tag in Helm values.yaml
+      - name: Update image tag in values.yaml
         run: |
-          yq e '.image.tag = "${{ env.COMMIT_SHA }}"' -i chart/values.yaml
-          cat chart/values.yaml  # Optional: Display the updated values.yaml for confirmation
+          sudo apt-get install -y yq
+          yq e '.image.tag = "${{ github.ref_name }}-${{ env.DATE }}-${{ env.COMMIT_SHA }}"' -i parasha/chart/values.yaml
 
       - name: Configure Git
         run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.MY_GITHUB_TOKEN }}@github.com/mendelsabb/parasha.git
 
       - name: Commit and push changes
         run: |
-          git add chart/values.yaml
-          git commit -m "Update image tag to ${{ env.COMMIT_SHA }}"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token to authenticate the push
+          git add parasha/chart/values.yaml
+          git commit -m "Update image tag to ${{ github.ref_name }}-${{ env.DATE }}-${{ env.COMMIT_SHA }}"
+          git push origin ${{ github.ref_name }}
+
