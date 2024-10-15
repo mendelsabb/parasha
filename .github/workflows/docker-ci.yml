@@ -45,8 +45,8 @@ jobs:
 
       - name: Update image tag in Helm values.yaml
         run: |
-          yq e '.image.tag = "${{ env.COMMIT_SHA }}"' -i parasha/chart/values.yaml
-          cat parasha/chart/values.yaml  # Optional: Display the updated values.yaml for confirmation
+          yq e '.image.tag = "${{ env.COMMIT_SHA }}"' -i chart/values.yaml
+          cat chart/values.yaml  # Optional: Display the updated values.yaml for confirmation
 
       - name: Configure Git
         run: |
