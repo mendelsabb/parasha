@@ -55,7 +55,7 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          git add parasha/chart/values.yaml
+          git add chart/values.yaml
           git commit -m "Update image tag to ${{ env.COMMIT_SHA }}"
           git push
         env:
