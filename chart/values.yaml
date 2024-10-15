@@ -4,7 +4,7 @@ cluster: api.alto3sg0g25ce33bb3.eastus.aroapp.io
 namespace: 896mendels
 image:
   repository: mendel27/torah-discourse-app
-  tag: ""
+  tag: "ASP"
   pullPolicy: Always
 service:
   type: ClusterIP
