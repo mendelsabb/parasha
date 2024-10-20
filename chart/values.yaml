@@ -4,22 +4,20 @@ cluster: api.alto3sg0g25ce33bb3.eastus.aroapp.io
 namespace: 896mendels
 image:
   repository: mendel27/torah-discourse-app
-  tag: "dev-2024-10-15-21e74df"
+  tag: "dev-2024-10-20-18d0e9d"
   pullPolicy: Always
 service:
   type: ClusterIP
   port: 8000
 route:
   enabled: true
-
-
 secrets:
   openai:
     name: openai
     apiKey: "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"
   docker:
     name: dockercred
-    dockerconfigjson: |
+    dockerconfigjson: |-
       {
           "auths": {
                   "https://index.docker.io/v1/": {
