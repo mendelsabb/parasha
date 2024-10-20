@@ -1,0 +1,22 @@
+argoCdAppOfApps:
+  name: app-of-apps
+  project: torah-discoure
+  repoUrl: https://github.com/mendelsabb/parasha.git
+  path: argocd/
+  targetRevision: dev
+
+applicationSet:
+  name: apps-in-namespaces
+  project: torah-discoure
+  generators:
+    namespaces:
+      - 896mendels
+  template:
+    repoUrl: https://github.com/mendelsabb/parasha.git
+    path: chart/
+    targetRevision: dev
+    syncPolicy:
+      automated: true
+
+github:
+  token: your-github-personal-access-token      
