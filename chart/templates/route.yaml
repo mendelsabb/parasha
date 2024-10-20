@@ -1,10 +1,10 @@
-# templates/route.yaml
 {{- if .Values.route.enabled -}}
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: {{ .Release.Name }}-torah-discourse
 spec:
+  host: {{ .Values.route.host }}
   to:
     kind: Service
     name: {{ .Release.Name }}-torah-discourse
