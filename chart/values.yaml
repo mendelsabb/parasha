@@ -14,7 +14,7 @@ route:
 secrets:
   openai:
     name: openai
-    apiKey: "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"
+    apiKey: "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"
   docker:
     name: dockercred
     dockerconfigjson: |-
